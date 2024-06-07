@@ -1,0 +1,19 @@
+{
+  "name": "javascript-webcrawler",
+  "version": "1.0.0",
+  "description": "Javacript webcrawler project.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mack-aroni/javascript-webcrawler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
