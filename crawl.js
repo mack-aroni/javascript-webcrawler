@@ -1,5 +1,30 @@
 const { JSDOM } = require('jsdom')
-const { skip } = require('node:test')
+
+// main call function to crawl a page
+async function crawlPage(url) {
+  console.log(`crawling ${url}`)
+
+  try {
+    const resp = await fetch(url)
+    // check valid fetch
+    if (resp.status > 399) {
+      console.log(`ERROR IN FETCH: status code ${resp.status} on ${url}`)
+      return
+    }
+
+    // check valid content type
+    const contentType = resp.headers.get("content-type")
+    if (!contentType.includes("text/html")) {
+      console.log(`NON HTML RESPONSE: content type ${contentType} on ${url}`)
+      return
+    }
+    
+    console.log(await resp.text())
+  } catch (err) {
+    console.log(`ERROR IN FETCH: ${err.message} on  ${url}`)
+  }
+
+}
 
 // helper function that obtains URL hrefs from HTML
 function getURLsFromHTML(html, url) {
@@ -16,7 +41,7 @@ function getURLsFromHTML(html, url) {
         const validURL = new URL(`${url}${element.href}`)
         urls.push(validURL.href)
       } catch (err) {
-        console.log(`Invalid URL: ${err.message}`)
+        console.log(`INVALID URL: ${err.message}`)
       }
     }
     else {
@@ -25,7 +50,7 @@ function getURLsFromHTML(html, url) {
         const validURL = new URL(element.href)
         urls.push(validURL.href)
       } catch (err) {
-        console.log(`Invalid URL: ${err.message}`)
+        console.log(`INVALID URL: ${err.message}`)
       }
     }
     
@@ -48,5 +73,6 @@ function normalizeURL(urlString) {
 
 module.exports = {
   normalizeURL,
-  getURLsFromHTML
+  getURLsFromHTML,
+  crawlPage
 }
