@@ -1,6 +1,6 @@
-const { crawlPage } = require('./crawl.js')
+const { crawlPages } = require('./crawl.js')
 
-function main() {
+async function main() {
   // input error checking
   if (process.argv.length < 3) {
     console.log("Not Enough Inputs Provided: npm start (url)")
@@ -11,9 +11,17 @@ function main() {
     process.exit(1)
   }
 
-  const baseURL = process.argv[2]
+  let baseURL = process.argv[2]
+  // remove trailing /
+  if (baseURL.slice(-1) === '/') {
+    baseURL = baseURL.slice(0,-1)
+  }
   console.log(`STARTING CRAWL OF ${baseURL}`)
-  crawlPage(baseURL)
+  const pages = await crawlPages(baseURL, baseURL, {})
+
+  for (const page of Object.entries(pages)) {
+    console.log(page)
+  }
 }
 
 main()
