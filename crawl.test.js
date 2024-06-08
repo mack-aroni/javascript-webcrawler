@@ -1,7 +1,5 @@
 const { test, expect } = require('@jest/globals')
 const { normalizeURL, getURLsFromHTML } = require('./crawl.js')
-const { get } = require('http')
-
 
 // tests for normalizing URLs
 test('normalizeURL strip protocol(http)', () => {

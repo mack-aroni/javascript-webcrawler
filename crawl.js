@@ -1,6 +1,6 @@
 const { JSDOM } = require('jsdom')
 
-// main call function to crawl a page
+// main call function to recursively crawl a website
 async function crawlPages(baseURL, currURL, pages) {
   // avoid exterior pages
   if ((new URL(currURL)).hostname !== (new URL(baseURL)).hostname) {
@@ -63,6 +63,7 @@ function getURLsFromHTML(html, url) {
   const elements = dom.window.document.querySelectorAll('a')
 
   for (const element of elements) {
+    console.log(element.href)
     let newURL = ''
     // check for absolute or relative paths
     if (element.href.slice(0, 1) === '/') {
