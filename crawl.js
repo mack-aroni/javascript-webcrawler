@@ -63,15 +63,17 @@ function getURLsFromHTML(html, url) {
   const elements = dom.window.document.querySelectorAll('a')
 
   for (const element of elements) {
-    console.log(element.href)
     let newURL = ''
-    // check for absolute or relative paths
-    if (element.href.slice(0, 1) === '/') {
-      // relative
+    // absolute disguised as relative edge case
+    if (element.href.slice(0,2) === "//") {
+      newURL = `${urlObj.protocol}${element.href}`
+    }
+    // relative
+    else if (element.href.slice(0, 1) === '/') {
       newURL = `${urlObj.protocol}${urlObj.hostname}${element.href}`
     }
+    // absolute
     else {
-      // absolute
       newURL = element.href
     }
 
@@ -79,8 +81,9 @@ function getURLsFromHTML(html, url) {
     try {
       urls.push(new URL(newURL).href)
     } catch (err) {
-      console.log(`INVALID URL: ${newURL}`)
+      console.log(`INVALID URL: ${newURL} ${element.href}`)
     }
+    
   }
   return urls
 }
