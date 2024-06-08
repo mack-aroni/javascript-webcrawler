@@ -2,17 +2,14 @@ const { JSDOM } = require('jsdom')
 
 // main call function to crawl a page
 async function crawlPages(baseURL, currURL, pages) {
-
-  const baseURLObj = new URL(baseURL)
-  const currURLObj = new URL(currURL)
   // avoid exterior pages
-  if (currURLObj.hostname !== baseURLObj.hostname) {
+  if ((new URL(currURL)).hostname !== (new URL(baseURL)).hostname) {
     return pages
   }
 
-  const normalizedURL = normalizeURL(currURL)
   // if a page is visited, increment count
   // else create entr
+  const normalizedURL = normalizeURL(currURL)
   if (pages[normalizedURL] > 0) {
     pages[normalizedURL]++
     return pages
@@ -21,6 +18,7 @@ async function crawlPages(baseURL, currURL, pages) {
 
   console.log(`CRAWLING: ${currURL}`)
   let html = ''
+
   try {
     const resp = await fetch(currURL)
     // check valid fetch
@@ -47,7 +45,7 @@ async function crawlPages(baseURL, currURL, pages) {
   const urls = getURLsFromHTML(html, currURL)
   //console.log(urls)
 
-  // recursively crawl pages
+  // recursively crawl pages contained in currURL
   for (const url of urls) {
     pages = await crawlPages(baseURL, url, pages)
   }
@@ -55,16 +53,16 @@ async function crawlPages(baseURL, currURL, pages) {
   return pages
 }
 
-// helper function that obtains URL hrefs from HTML
+// helper function that obtains URL hrefs from a pages HTML
 function getURLsFromHTML(html, url) {
   const urls = []
   const urlObj = new URL(url)
+
   // selects all link elements
   const dom = new JSDOM(html)
   const elements = dom.window.document.querySelectorAll('a')
 
   for (const element of elements) {
-    //console.log(element.href, new URL(url).pathname)
     let newURL = ''
     // check for absolute or relative paths
     if (element.href.slice(0, 1) === '/') {
@@ -76,6 +74,7 @@ function getURLsFromHTML(html, url) {
       newURL = element.href
     }
 
+    // check valid url      
     try {
       urls.push(new URL(newURL).href)
     } catch (err) {
@@ -85,7 +84,8 @@ function getURLsFromHTML(html, url) {
   return urls
 }
 
-// helper function to normalize urls (strip protocol and trailing slashes)
+// helper function to normalize urls
+// (strip protocol and trailing slashes)
 function normalizeURL(url) {
   const urlObj = new URL(url)
   const hostPath = `${urlObj.hostname}${urlObj.pathname}`
