@@ -1,4 +1,5 @@
 const { crawlPages } = require('./crawl.js')
+const { sortPages } = require('./report.js')
 
 async function main() {
   // input error checking
@@ -19,7 +20,7 @@ async function main() {
   console.log(`STARTING CRAWL OF ${baseURL}`)
   const pages = await crawlPages(baseURL, baseURL, {})
 
-  for (const page of Object.entries(pages)) {
+  for (const page of sortPages(pages)) {
     console.log(page)
   }
 }
