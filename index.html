@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Graph Visualization</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div id="network" style="width: 100%; height: 800px"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script>
+      // Load graphData from JSON file
+      fetch("graphData.json")
+        .then((response) => response.json())
+        .then((graphData) => {
+          const nodes = [];
+          const edges = [];
+          const nodeIds = new Set();
+
+          graphData.forEach((item) => {
+            const { url, links } = item;
+            if (!nodeIds.has(url)) {
+              nodes.push({ id: url, label: url });
+              nodeIds.add(url);
+            }
+            links.forEach((link) => {
+              if (!nodeIds.has(link)) {
+                nodes.push({ id: link, label: link });
+                nodeIds.add(link);
+              }
+              edges.push({ from: url, to: link });
+            });
+          });
+
+          const container = document.getElementById("network");
+          const visData = {
+            nodes: new vis.DataSet(nodes),
+            edges: new vis.DataSet(edges),
+          };
+          const options = {
+            nodes: {
+              shape: "dot",
+              size: 16,
+            },
+            layout: {
+              randomSeed: 100,
+            },
+            physics: {
+              forceAtlas2Based: {
+                gravitationalConstant: -50,
+                centralGravity: 0.01,
+                springLength: 300,
+                springConstant: 0.08,
+              },
+              maxVelocity: 50,
+              solver: "forceAtlas2Based",
+              timestep: 0.35,
+              stabilization: {
+                enabled: true,
+                iterations: 2000,
+                updateInterval: 25,
+              },
+            },
+          };
+
+          new vis.Network(container, visData, options);
+        });
+    </script>
+  </body>
+</html>
