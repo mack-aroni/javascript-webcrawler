@@ -6,3 +6,4 @@ Intially this version is mean to recursively crawl
 and displays the web structure of the site in html
 
 To use, npm start (url)
+To view page structure open index.html in a liveserver
