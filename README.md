@@ -9,4 +9,5 @@ To use type:
 npm start (url)
 ```
 in the terminal. <br />
-To view page structure open index.html in a liveserver
+
+To view page structure graph open index.html in a liveserver
